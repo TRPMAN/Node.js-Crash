@@ -1,1 +1,0 @@
-hello but it is from writeFile Function
