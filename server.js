@@ -1,8 +1,11 @@
 const http = require('http');
 const fs = require('fs');
+const lod = require('lodash');
 
 const server = http.createServer((req,res) => {
-  console.log('Request received:', req.method, req.url);
+  // lodash
+  const num = lod.random(1, 100);
+  console.log(`Random number: ${num}`);
 
   //set header content type
   res.setHeader('Content-Type','text/html');
