@@ -1,11 +1,12 @@
 const express = require('express');
 const morgan = require('morgan');
-const mongoose = require('mongoose')
-const Blog = require('./models/blog')
+const mongoose = require('mongoose');
+const blogRoutes = require('./routes/blogRoutes');
+require('dotenv').config();
 
 const app = express();
 
-const dbURI = 'mongodb+srv://trpman08:test123@cluster0.myhumft.mongodb.net/learning?retryWrites=true&w=majority&appName=Cluster0'
+const dbURI = process.env.MONGODB_URI;
 mongoose.connect(dbURI)
   .then((result) => app.listen(3000))
   .catch((err) => console.log(err))
@@ -52,15 +53,16 @@ app.get('/all-blog', (req,res) => {
 
 //middleware & static files
 app.use(express.static('public'));
+app.use(express.urlencoded({extended:true}));
 app.use(morgan('dev')); 
 
-app.use((res,req,next) => {
-  console.log('new request made: ');
-  console.log('host: ',req.hostname);
-  console.log('path: ',req.path);
-  console.log('method: ',req.method)
-  next();
-})
+// app.use((res,req,next) => {
+//   console.log('new request made: ');
+//   console.log('host: ',req.hostname);
+//   console.log('path: ',req.path);
+//   console.log('method: ',req.method)
+//   next();
+// })
 
 app.get('/',(req,res) => {
   // res.send('<p>hello world</p>')
@@ -78,21 +80,8 @@ app.get('/about',(req,res) => {
   res.render('about',{title: "About"});
 })
 
-app.get('/blogs',(req,res) => {
-  // res.send('<p>hello world</p>')
-  Blog.find().sort({createdAt: -1})
-    .then((result) => {
-      res.render('index', { title: "All Blogs", blogs: result})
-    })
-    .catch((err) => {
-      console.log(err)
-    })
-
-})
-
-app.get('/blogs/create',(req,res) => {
-  res.render('create',{title: "Create a new Blog"});
-})
+//blog routes
+app.use('/blogs',blogRoutes)
 
 //redirect
 app.get('/about-us',(req,res) => {
