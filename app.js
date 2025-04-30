@@ -5,7 +5,7 @@ const Blog = require('./models/blog')
 
 const app = express();
 
-const dbURI = 'mongodb+srv://trpman08:test123@cluster0.myhumft.mongodb.net/learning?retryWrites=true&w=majority&appName=Cluster0'
+const dbURI = process.env.MONGODB_URI;
 mongoose.connect(dbURI)
   .then((result) => app.listen(3000))
   .catch((err) => console.log(err))
